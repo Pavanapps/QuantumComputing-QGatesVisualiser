@@ -3,3 +3,4 @@ qiskit
 qiskit-aer
 matplotlib
 gunicorn
+pylatexenc
