@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Quantum Gates Visualizer</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <style>
+
+        body{
+            font-family:'Segoe UI',sans-serif;
+            background:#07142c;
+            color:white;
+            margin:0;
+            text-align:center;
+        }
+
+        .container{
+            max-width:1000px;
+            margin:auto;
+            padding:30px;
+        }
+
+        h1{
+            font-size:60px;
+            margin-bottom:40px;
+        }
+
+        form{
+            margin-bottom:40px;
+        }
+
+        select,input{
+            padding:18px;
+            width:320px;
+            border:none;
+            border-radius:18px;
+            font-size:20px;
+            margin:10px;
+        }
+
+        button{
+            background:#6366f1;
+            color:white;
+            border:none;
+            padding:18px 35px;
+            border-radius:18px;
+            font-size:24px;
+            cursor:pointer;
+            transition:0.3s;
+        }
+
+        button:hover{
+            transform:scale(1.05);
+            background:#4f46e5;
+        }
+
+        .card{
+            background:#111c3a;
+            padding:25px;
+            margin-top:25px;
+            border-radius:20px;
+        }
+
+        img{
+            max-width:100%;
+            margin-top:20px;
+            border-radius:15px;
+            background:white;
+        }
+
+        .analysis{
+            text-align:left;
+            line-height:1.8;
+            font-size:18px;
+        }
+
+        .probability-box{
+            background:#1c2b52;
+            padding:15px;
+            border-radius:15px;
+            margin-top:15px;
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>⚛ Quantum Gates Visualizer</h1>
+
+    <form method="POST">
+
+        <select name="gate">
+
+            <option value="H"
+            {% if selected_gate == "H" %}selected{% endif %}>
+                Hadamard (H)
+            </option>
+
+            <option value="X"
+            {% if selected_gate == "X" %}selected{% endif %}>
+                Pauli-X
+            </option>
+
+            <option value="Y"
+            {% if selected_gate == "Y" %}selected{% endif %}>
+                Pauli-Y
+            </option>
+
+            <option value="Z"
+            {% if selected_gate == "Z" %}selected{% endif %}>
+                Pauli-Z
+            </option>
+
+            <option value="RX"
+            {% if selected_gate == "RX" %}selected{% endif %}>
+                RX
+            </option>
+
+            <option value="RY"
+            {% if selected_gate == "RY" %}selected{% endif %}>
+                RY
+            </option>
+
+            <option value="RZ"
+            {% if selected_gate == "RZ" %}selected{% endif %}>
+                RZ
+            </option>
+
+        </select>
+
+        <input
+            type="number"
+            step="0.1"
+            name="angle"
+            value="{{ selected_angle }}"
+            placeholder="Angle (for RX/RY/RZ)"
+        >
+
+        <br><br>
+
+        <button type="submit">Run</button>
+
+    </form>
+
+    {% if result %}
+
+    <!-- Quantum Analysis -->
+    <div class="card">
+
+        <h2>Quantum Analysis</h2>
+
+        <div class="analysis">
+
+            <p>
+                <strong>Selected Gate:</strong>
+                {{ selected_gate }}
+            </p>
+
+            {% if selected_angle %}
+            <p>
+                <strong>Rotation Angle:</strong>
+                {{ selected_angle }} radians
+            </p>
+            {% endif %}
+
+            <p>
+                {{ result.explanation }}
+            </p>
+
+        </div>
+
+    </div>
+
+    <!-- Statevector -->
+    <div class="card">
+
+        <h2>Statevector</h2>
+
+        <p>{{ result.statevector }}</p>
+
+    </div>
+
+    <!-- Probabilities -->
+    <div class="card">
+
+        <h2>Measurement Probabilities</h2>
+
+        <div class="probability-box">
+
+            {% for key, value in result.probabilities.items() %}
+
+            <p>
+                <strong>{{ key }}</strong> :
+                {{ "%.4f"|format(value) }}
+            </p>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+    <!-- Circuit -->
+    <div class="card">
+
+        <h2>Quantum Circuit</h2>
+
+        <img src="{{ url_for('static', filename=result.circuit_img) }}">
+
+    </div>
+
+    <!-- Bloch Sphere -->
+    <div class="card">
+
+        <h2>Bloch Sphere Visualization</h2>
+
+        <img src="{{ url_for('static', filename=result.bloch_img) }}">
+
+    </div>
+
+    <!-- Histogram -->
+    <div class="card">
+
+        <h2>Measurement Histogram</h2>
+
+        <img src="{{ url_for('static', filename=result.hist_img) }}">
+
+    </div>
+
+    {% endif %}
+
+</div>
+
+</body>
+</html>
