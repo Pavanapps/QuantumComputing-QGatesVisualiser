@@ -1,3 +1,6 @@
+import matplotlib
+matplotlib.use('Agg')
+
 from flask import Flask, render_template, request
 from qiskit import QuantumCircuit
 from qiskit.quantum_info import Statevector
